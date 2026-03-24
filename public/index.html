@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Crown Hostel</title>
+  <meta name="description" content="Digital hostel lunch management system for students, delivery men, and administrators.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== LANDING PAGE ========== -->
+  <section id="landing-page" class="page active">
+    <div class="landing-container">
+      <div class="logo-area">
+        <div class="logo-icon">🍱</div>
+        <h1>Hostel Lunch Manager</h1>
+        <p class="tagline">Digital lunch booking, delivery tracking & management</p>
+      </div>
+      <div class="role-cards">
+        <div class="role-card" onclick="showPage('student-login-page')">
+          <div class="role-icon">🎓</div>
+          <h2>Student</h2>
+          <p>Book your daily lunch & track delivery</p>
+        </div>
+        <div class="role-card" onclick="showPage('delivery-login-page')">
+          <div class="role-icon">🚚</div>
+          <h2>Delivery Man</h2>
+          <p>Manage deliveries to students</p>
+        </div>
+        <div class="role-card" onclick="showPage('desk-login-page')">
+          <div class="role-icon">🏪</div>
+          <h2>Desk Operator</h2>
+          <p>Manage lunchbox returns at the desk</p>
+        </div>
+        <div class="role-card" onclick="showPage('admin-login-page')">
+          <div class="role-icon">🛡️</div>
+          <h2>Admin</h2>
+          <p>Manage students, delivery staff & reports</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STUDENT LOGIN ========== -->
+  <section id="student-login-page" class="page">
+    <div class="form-container">
+      <button class="back-btn" onclick="showPage('landing-page')">← Back</button>
+      <div class="form-header">
+        <div class="form-icon">🎓</div>
+        <h1>Student Login</h1>
+      </div>
+      <form id="student-login-form" onsubmit="return studentLogin(event)">
+        <div class="input-group">
+          <label for="sl-phone">Phone Number</label>
+          <input type="tel" id="sl-phone" placeholder="Enter your phone number" required>
+        </div>
+        <div class="input-group">
+          <label for="sl-password">Password</label>
+          <input type="password" id="sl-password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="student-login-btn">Login</button>
+        <div id="student-login-error" class="error-msg"></div>
+      </form>
+      <p class="form-footer">New student? <a href="#" onclick="showPage('student-register-page')">Register here</a></p>
+    </div>
+  </section>
+
+  <!-- ========== STUDENT REGISTRATION ========== -->
+  <section id="student-register-page" class="page">
+    <div class="form-container">
+      <button class="back-btn" onclick="showPage('student-login-page')">← Back</button>
+      <div class="form-header">
+        <div class="form-icon">📝</div>
+        <h1>Student Registration</h1>
+      </div>
+      <form id="student-register-form" onsubmit="return studentRegister(event)">
+        <div class="input-group">
+          <label for="reg-name">Full Name</label>
+          <input type="text" id="reg-name" placeholder="Enter your full name" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-phone">Phone Number</label>
+          <input type="tel" id="reg-phone" placeholder="Enter your phone number" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" placeholder="Create a password" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-college">College Name</label>
+          <select id="reg-college" required>
+            <option value="">Select your college</option>
+            <option value="Galgotia College">Galgotia College</option>
+            <option value="KCC College">KCC College</option>
+            <option value="GL Bajaj College">GL Bajaj College</option>
+            <option value="GNAT College">GNAT College</option>
+            <option value="AIMS College">AIMS College</option>
+            <option value="Mangalmay College">Mangalmay College</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="reg-room">Room Number</label>
+          <input type="text" id="reg-room" placeholder="e.g., A-101" required>
+        </div>
+        <div class="input-group">
+          <label for="reg-time">Lunch Time</label>
+          <input type="time" id="reg-time" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="student-register-btn">Register</button>
+        <div id="register-error" class="error-msg"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========== STUDENT DASHBOARD ========== -->
+  <section id="student-dashboard-page" class="page">
+    <nav class="dashboard-nav">
+      <div class="nav-brand">
+        <span class="nav-icon">🍱</span>
+        <span>Student Dashboard</span>
+      </div>
+      <div class="nav-user">
+        <span id="student-name-display"></span>
+        <button class="btn btn-sm btn-outline" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+    <div class="dashboard-content">
+      <div class="card">
+        <h3>Your Profile</h3>
+        <div class="profile-info">
+          <p>👤 <strong>Name:</strong> <span id="profile-name"></span></p>
+          <p>📱 <strong>Phone:</strong> <span id="profile-phone"></span></p>
+          <p>🎓 <strong>College:</strong> <span id="profile-college"></span></p>
+          <p>🏠 <strong>Room:</strong> <span id="profile-room"></span></p>
+          <p>🕐 <strong>Lunch Time:</strong> <span id="profile-time"></span></p>
+          <p>📋 <strong>Status:</strong> <span id="profile-status"></span></p>
+        </div>
+      </div>
+      <div class="card booking-card">
+        <h3>Today's Lunch — <span id="today-date"></span></h3>
+        <div id="booking-action-area">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== DELIVERY MAN LOGIN ========== -->
+  <section id="delivery-login-page" class="page">
+    <div class="form-container">
+      <button class="back-btn" onclick="showPage('landing-page')">← Back</button>
+      <div class="form-header">
+        <div class="form-icon">🚚</div>
+        <h1>Delivery Man Login</h1>
+      </div>
+      <form id="delivery-login-form" onsubmit="return deliveryLogin(event)">
+        <div class="input-group">
+          <label for="dl-phone">Phone Number</label>
+          <input type="tel" id="dl-phone" placeholder="Enter your phone number" required>
+        </div>
+        <div class="input-group">
+          <label for="dl-password">Password</label>
+          <input type="password" id="dl-password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="delivery-login-btn">Login</button>
+        <div id="delivery-login-error" class="error-msg"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========== DELIVERY MAN DASHBOARD ========== -->
+  <section id="delivery-dashboard-page" class="page">
+    <nav class="dashboard-nav">
+      <div class="nav-brand">
+        <span class="nav-icon">🚚</span>
+        <span>Delivery Dashboard</span>
+      </div>
+      <div class="nav-user">
+        <span id="delivery-name-display"></span>
+        <button class="btn btn-sm btn-outline" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+    <div class="dashboard-content">
+      <div class="welcome-banner delivery-banner">
+        <h2>Welcome, <span id="delivery-welcome-name"></span>!</h2>
+        <p>Assigned Colleges: <span id="delivery-colleges"></span></p>
+      </div>
+      <div class="card search-card">
+        <div class="search-bar">
+          <input type="text" id="delivery-search-input" placeholder="🔍 Search by phone, room, or name..." oninput="deliverySearchStudents()">
+        </div>
+      </div>
+      <div class="summary-row" id="delivery-summary-row">
+        <!-- Filled by JS -->
+      </div>
+      <div class="card">
+        <div class="student-list" id="delivery-student-list">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== DESK OPERATOR LOGIN ========== -->
+  <section id="desk-login-page" class="page">
+    <div class="form-container">
+      <button class="back-btn" onclick="showPage('landing-page')">← Back</button>
+      <div class="form-header">
+        <div class="form-icon">🏪</div>
+        <h1>Desk Operator Login</h1>
+      </div>
+      <form id="desk-login-form" onsubmit="return deskLogin(event)">
+        <div class="input-group">
+          <label for="dkl-phone">Phone Number</label>
+          <input type="tel" id="dkl-phone" placeholder="Enter your phone number" required>
+        </div>
+        <div class="input-group">
+          <label for="dkl-password">Password</label>
+          <input type="password" id="dkl-password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="desk-login-btn">Login</button>
+        <div id="desk-login-error" class="error-msg"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========== DESK OPERATOR DASHBOARD ========== -->
+  <section id="desk-dashboard-page" class="page">
+    <nav class="dashboard-nav">
+      <div class="nav-brand">
+        <span class="nav-icon">🏪</span>
+        <span>Desk Operator Dashboard</span>
+      </div>
+      <div class="nav-user">
+        <span id="desk-name-display"></span>
+        <button class="btn btn-sm btn-outline" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+    <div class="dashboard-content">
+      <div class="welcome-banner desk-banner">
+        <h2>Welcome, <span id="desk-welcome-name"></span>!</h2>
+        <p>Central Return Desk — Mark lunchbox returns from students</p>
+      </div>
+      <div class="summary-row" id="desk-summary-row">
+        <!-- Filled by JS -->
+      </div>
+      <div class="desk-filter-bar" id="desk-filter-bar">
+        <div class="desk-college-tabs" id="desk-college-tabs">
+          <!-- Filled by JS -->
+        </div>
+        <div class="desk-controls-row">
+          <div class="desk-status-filters" id="desk-status-filters">
+            <button class="desk-filter-btn active" onclick="setDeskStatusFilter('pending')" id="desk-filter-pending">🔴 Not Returned</button>
+            <button class="desk-filter-btn" onclick="setDeskStatusFilter('returned')" id="desk-filter-returned">🟢 Returned</button>
+            <button class="desk-filter-btn" onclick="setDeskStatusFilter('all')" id="desk-filter-all">All</button>
+          </div>
+          <div class="desk-search-wrap">
+            <input type="text" id="desk-search-input" placeholder="🔍 Search phone or room..." oninput="deskSearchStudents()">
+          </div>
+        </div>
+      </div>
+      <div class="card desk-table-card">
+        <div class="desk-results-count" id="desk-results-count"></div>
+        <div class="desk-table-wrapper">
+          <table class="desk-table" id="desk-student-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Room</th>
+                <th>College</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="desk-student-list">
+              <!-- Filled by JS -->
+            </tbody>
+          </table>
+        </div>
+        <div id="desk-empty-state" class="empty-state" style="display:none;">
+          <p>🎉 No records found.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ADMIN LOGIN ========== -->
+  <section id="admin-login-page" class="page">
+    <div class="form-container">
+      <button class="back-btn" onclick="showPage('landing-page')">← Back</button>
+      <div class="form-header">
+        <div class="form-icon">🛡️</div>
+        <h1>Admin Login</h1>
+      </div>
+      <form id="admin-login-form" onsubmit="return adminLogin(event)">
+        <div class="input-group">
+          <label for="admin-user">Username</label>
+          <input type="text" id="admin-user" placeholder="Enter admin username" required>
+        </div>
+        <div class="input-group">
+          <label for="admin-pass">Password</label>
+          <input type="password" id="admin-pass" placeholder="Enter admin password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="admin-login-btn">Login</button>
+        <div id="admin-login-error" class="error-msg"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========== ADMIN DASHBOARD ========== -->
+  <section id="admin-dashboard-page" class="page">
+    <nav class="dashboard-nav">
+      <div class="nav-brand">
+        <span class="nav-icon">🛡️</span>
+        <span>Admin Dashboard</span>
+      </div>
+      <div class="nav-user">
+        <span>Administrator</span>
+        <button class="btn btn-sm btn-outline" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+    <div class="dashboard-content">
+      <!-- Admin Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('approvals')">Pending Approvals</button>
+        <button class="admin-tab" onclick="switchAdminTab('students')">All Students</button>
+        <button class="admin-tab" onclick="switchAdminTab('lunch')">Lunch Count</button>
+        <button class="admin-tab" onclick="switchAdminTab('delivery')">Delivery Men</button>
+        <button class="admin-tab" onclick="switchAdminTab('deskops')">Desk Operators</button>
+        <button class="admin-tab" onclick="switchAdminTab('tracking')">Box Tracking</button>
+        <button class="admin-tab" onclick="switchAdminTab('analytics')">📊 Analytics</button>
+      </div>
+
+      <!-- Pending Approvals -->
+      <div class="admin-panel active" id="panel-approvals">
+        <div class="card">
+          <h3>📋 Pending Student Registrations</h3>
+          <div id="approval-list" class="student-list">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- All Students -->
+      <div class="admin-panel" id="panel-students">
+        <div class="card">
+          <h3>👨‍🎓 All Approved Students</h3>
+          <div class="search-bar" style="margin-bottom: 1rem;">
+            <input type="text" id="admin-student-search" placeholder="Search by name, phone, or college..." oninput="adminSearchStudents()">
+          </div>
+          <div id="all-students-list" class="student-list">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Lunch Count -->
+      <div class="admin-panel" id="panel-lunch">
+        <div class="card">
+          <h3>📊 Daily Lunch Count by College</h3>
+          <div class="date-picker-row">
+            <label>Select Date:</label>
+            <input type="date" id="admin-lunch-date" onchange="adminLoadLunchCount()">
+          </div>
+          <div id="lunch-count-grid" class="count-grid">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Men Management -->
+      <div class="admin-panel" id="panel-delivery">
+        <div class="card">
+          <h3>🚚 Delivery Men Management</h3>
+          <button class="btn btn-primary" onclick="showAddDeliveryManForm()">+ Add Delivery Man</button>
+          <div id="add-dm-form" class="inline-form" style="display:none;">
+            <div class="input-group">
+              <label>Name</label>
+              <input type="text" id="adm-dm-name" placeholder="Delivery man name" required>
+            </div>
+            <div class="input-group">
+              <label>Phone</label>
+              <input type="tel" id="adm-dm-phone" placeholder="Phone number" required>
+            </div>
+            <div class="input-group">
+              <label>Password</label>
+              <input type="password" id="adm-dm-password" placeholder="Login password">
+            </div>
+            <div class="input-group">
+              <label>Assign Colleges</label>
+              <div class="checkbox-group">
+                <label><input type="checkbox" class="college-checkbox" value="Galgotia College"> Galgotia</label>
+                <label><input type="checkbox" class="college-checkbox" value="KCC College"> KCC</label>
+                <label><input type="checkbox" class="college-checkbox" value="GL Bajaj College"> GL Bajaj</label>
+                <label><input type="checkbox" class="college-checkbox" value="GNAT College"> GNAT</label>
+                <label><input type="checkbox" class="college-checkbox" value="AIMS College"> AIMS</label>
+                <label><input type="checkbox" class="college-checkbox" value="Mangalmay College"> Mangalmay</label>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="saveDeliveryMan()" id="save-dm-btn">Save</button>
+              <button class="btn btn-outline" onclick="hideAddDeliveryManForm()">Cancel</button>
+            </div>
+          </div>
+          <div id="delivery-men-list" class="deliveryman-list">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Desk Operators Management -->
+      <div class="admin-panel" id="panel-deskops">
+        <div class="card">
+          <h3>🏪 Desk Operators Management</h3>
+          <button class="btn btn-primary" onclick="showAddDeskOpForm()">+ Add Desk Operator</button>
+          <div id="add-deskop-form" class="inline-form" style="display:none;">
+            <div class="input-group">
+              <label>Name</label>
+              <input type="text" id="adm-do-name" placeholder="Desk operator name" required>
+            </div>
+            <div class="input-group">
+              <label>Phone</label>
+              <input type="tel" id="adm-do-phone" placeholder="Phone number" required>
+            </div>
+            <div class="input-group">
+              <label>Password</label>
+              <input type="password" id="adm-do-password" placeholder="Login password">
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="saveDeskOp()" id="save-deskop-btn">Save</button>
+              <button class="btn btn-outline" onclick="hideAddDeskOpForm()">Cancel</button>
+            </div>
+          </div>
+          <div id="desk-ops-list" class="deliveryman-list">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Box Tracking -->
+      <div class="admin-panel" id="panel-tracking">
+        <div class="card">
+          <h3>📦 Lunchbox Tracking</h3>
+          <div class="date-picker-row">
+            <label>Select Date:</label>
+            <input type="date" id="admin-tracking-date" onchange="adminLoadTracking()">
+          </div>
+          <div class="summary-row" id="admin-tracking-summary">
+            <!-- Filled by JS -->
+          </div>
+          <div id="admin-tracking-list" class="student-list">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics Dashboard -->
+      <div class="admin-panel" id="panel-analytics">
+        <div class="card">
+          <h3>📊 Analytics Dashboard</h3>
+          <div class="summary-row" id="analytics-summary">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        <div class="card">
+          <h3>📈 Daily Trends (Last 30 Days)</h3>
+          <div class="chart-container">
+            <canvas id="daily-chart"></canvas>
+          </div>
+        </div>
+        <div class="analytics-grid">
+          <div class="card">
+            <h3>🏫 College Breakdown (Today)</h3>
+            <div class="chart-container">
+              <canvas id="college-chart"></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <h3>🕐 Peak Lunch Hours</h3>
+            <div class="chart-container">
+              <canvas id="peak-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
